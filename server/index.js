@@ -19,6 +19,7 @@ const roomSelected = {}
 const roomWinner = {}
 const roomPhase = {}
 const roomTroops = {}
+const roomSize = {}
 
 function getClientsInRoom(io, roomId) {
     const room = io.sockets.adapter.rooms.get(roomId)
@@ -72,6 +73,7 @@ function calcFight(node1, node2, room) {
 }
 
 function move(data, room, socket) {
+    console.log(roomMaps[room])
     let clickedNode = roomMaps[room][data - 1]
     if (data == -1) {
         if (roomPhase[room] == 'attack') {
@@ -79,9 +81,9 @@ function move(data, room, socket) {
         } else if (roomPhase[room] == 'defend') {
             let i = 0
             while (roomTroops[room] > 0) {
-                if (roomMaps[room][i].color == roomTurns[room]){
+                if (roomMaps[room][i].color == roomTurns[room]) {
                     roomMaps[room][i].units += 1
-                    
+
                     roomTroops[room] -= 1
                 }
                 i++
@@ -127,6 +129,84 @@ function move(data, room, socket) {
     }
 }
 
+function getPossibleConnections(i, size) {
+    let columnLeft = []
+    let columnRight = []
+    for (let i = 0; i < size - 2; i++) {
+        columnLeft.push((i + 1) * size + 1)
+        columnRight.push((i + 1) * size + size)
+    }
+    if (i == 1) {
+        return [i + 1, i + size, i + size + 1]
+    } else if (i == size) {
+        return [i - 1, i + size, i + size - 1]
+    } else if (Math.sqrt(i) == size) {
+        return [i - 1, i - size, i - size - 1]
+    } else if (i == (size - 1) * size + 1) {
+        return [i + 1, i - size, i - size + 1]
+    } else if (i < size) {
+        return [i - 1, i + 1, i + size, i + size - 1, i + size + 1]
+    } else if (columnLeft.includes(i)) {
+        return [i - size, i + 1, i + size, i - size + 1, i + size + 1]
+    } else if (columnRight.includes(i)) {
+        return [i - size, i - 1, i + size, i - size - 1, i + size - 1]
+    } else if (size * (size - 1) + 1 < i && i < size ** 2) {
+        return [i - 1, i + 1, i - size + 1, i - size - 1, i - size]
+    } else {
+        return [
+            i - 1,
+            i + 1,
+            i - size,
+            i - size + 1,
+            i - size - 1,
+            i + size,
+            i + size - 1,
+            i + size + 1,
+        ]
+    }
+}
+
+function generateRoom() {
+    map = []
+    size = Math.floor(Math.random() * 3) + 3
+    for (let i = 1; i <= size ** 2; i++) {
+        let conns = getPossibleConnections(i, size)
+        // console.log(Math.random())
+        let rem = []
+        for (let i = 0; i < conns.length; i++) {
+            if (Math.random() > 0.75) {
+                rem.push(conns[i])
+            }
+        }
+        if(rem.length==0){
+            rem.push(conns[Math.floor(Math.random()*conns.length)])
+        }
+        // console.log(rem)
+        map.push({
+            id: i,
+            connections: rem,
+            color: 'neutral',
+            units: 0,
+        })
+    }
+    for(let i=0;i<map.length;i++){
+        for(let j=0;j<map[i].connections.length;j++){
+            let connectedNode = map[i].connections[j]
+            let currentNode = map[connectedNode-1]
+            // console.log
+            if(!currentNode.connections.includes(map[i].id)){
+                map[connectedNode-1].connections.push(map[i].id)
+            }
+        }
+    }
+    map[0].color = 'blue'
+    map[0].units = 2
+    map[size ** 2 - 1].color = 'red'
+    map[size ** 2 - 1].units = 3
+    // console.log(map)
+    return { map, size }
+}
+
 io.on('connection', (socket) => {
     console.log(`${socket.id} connected`)
     socket.on('join_room', (room) => {
@@ -135,22 +215,11 @@ io.on('connection', (socket) => {
             roomTroops[room] = 0
             roomTurns[room] = 'blue'
             roomColours[room] = socket.id
-            roomMaps[room] = [
-                { id: 1, connections: [2, 4, 5], color: 'blue', units: 2 },
-                { id: 2, connections: [1, 3], color: 'neutral', units: 0 },
-                { id: 3, connections: [2, 5, 6], color: 'neutral', units: 0 },
-                { id: 4, connections: [1, 5], color: 'neutral', units: 0 },
-                {
-                    id: 5,
-                    connections: [1, 3, 4, 6, 7, 8],
-                    color: 'neutral',
-                    units: 0,
-                },
-                { id: 6, connections: [3, 5, 9], color: 'neutral', units: 0 },
-                { id: 7, connections: [5], color: 'neutral', units: 0 },
-                { id: 8, connections: [5, 9], color: 'neutral', units: 0 },
-                { id: 9, connections: [6, 8], color: 'red', units: 2 },
-            ]
+            let details = generateRoom()
+            // console.log(details)
+            roomMaps[room] = details.map
+            roomSize[room] = details.size
+            // console.log(details.map)
             roomPhase[room] = 'attack'
             socket.join(room)
             console.log(`${socket.id} joined ${room}`)
@@ -159,8 +228,8 @@ io.on('connection', (socket) => {
             } else {
                 socket.emit('player_id', 'red')
             }
-            io.to(room).emit('map', roomMaps[room])
-            socket.emit('map', roomMaps[room])
+            io.to(room).emit('map', [roomMaps[room], roomSize[room]])
+            socket.emit('map', [roomMaps[room], roomSize[room]])
             socket.emit('turn', roomTurns[room])
         } else if (room_size === 1) {
             if (!io.sockets.adapter.rooms.get(room).has(roomColours[room])) {
@@ -173,8 +242,8 @@ io.on('connection', (socket) => {
             } else {
                 socket.emit('player_id', 'red')
             }
-            io.to(room).emit('map', roomMaps[room])
-            socket.emit('map', roomMaps[room])
+            io.to(room).emit('map', [roomMaps[room], roomSize[room]])
+            socket.emit('map', [roomMaps[room], roomSize[room]])
             io.to(room).emit('turn', roomTurns[room])
             socket.emit('turn', roomTurns[room])
         } else {
@@ -192,6 +261,24 @@ io.on('connection', (socket) => {
             }
             move(-1, data[1], socket.id)
         }
+        let count = 0
+        for (let i = 0; i < roomMaps[data[1]].length; i++) {
+            if ('blue' === roomMaps[data[1]][i].color) {
+                count++
+            }
+        }
+        if (count === 0) {
+            roomTurns[data[1]] === 'blue' ? 'red' : 'blue'
+        }
+        count = 0
+        for (let i = 0; i < roomMaps[data[1]].length; i++) {
+            if ('red' === roomMaps[data[1]][i].color) {
+                count++
+            }
+        }
+        if (count === 0) {
+            roomTurns[data[1]] === 'blue' ? 'red' : 'blue'
+        }
         emitAllData(data[1])
     })
     socket.on('selected', (data) => {
@@ -203,12 +290,12 @@ io.on('connection', (socket) => {
         console.log(`${socket.id} left ${room}`)
     })
     function emitAllData(room) {
-        io.to(room).emit('map', roomMaps[room])
-        socket.emit('map', roomMaps[room])
+        io.to(room).emit('map', [roomMaps[room], roomSize[room]])
+        socket.emit('map', [roomMaps[room], roomSize[room]])
         io.to(room).emit('turn', roomTurns[room])
         socket.emit('turn', roomTurns[room])
-        io.to(room).emit('phase', roomPhase[room])
-        socket.emit('phase', roomPhase[room])
+        // io.to(room).emit('phase', roomPhase[room])
+        // socket.emit('phase', roomPhase[room])
     }
 })
 
