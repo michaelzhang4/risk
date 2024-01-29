@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom'
 import * as PIXI from 'pixi.js'
 import io from 'socket.io-client'
 
-
 function GameRoom() {
     const { room } = useParams()
     const gameCanvasRef = useRef(null)
@@ -15,13 +14,15 @@ function GameRoom() {
     const [error, setError] = useState(true)
     const [player, setPlayer] = useState('')
     const [turn, setTurn] = useState('')
-    const socketRef = useRef(null);
+    const [roomName, setRoomName] = useState(room.substring(5, room.length))
+    const socketRef = useRef(null)
+
     useEffect(() => {
         socketRef.current = io('http://localhost:3001')
-        const socket=socketRef.current;
+        const socket = socketRef.current
         socket.on('connect', () => {
             setError(false)
-            socket.emit('join_room', room.substring(5, room.length))
+            socket.emit('join_room', roomName)
         })
 
         socket.on('player_id', (data) => {
@@ -32,7 +33,7 @@ function GameRoom() {
             setMap(data)
         })
 
-        socket.on('turn',(data) => {
+        socket.on('turn', (data) => {
             setTurn(data)
         })
 
@@ -58,17 +59,21 @@ function GameRoom() {
         if (error) {
             return
         }
+
+        function onClick2() {
+            socketRef.current.emit('endTurn', [player, roomName])
+        }
+
+        function onClick(sprite) {
+            socketRef.current.emit('selected', [sprite.id, roomName])
+        }
+
         const app = new PIXI.Application({
             background: '#1099bb',
             resizeTo: window,
-
         })
-        function onClick(sprite) {
-            socketRef.current.emit('selected',sprite.id)
-        }
-
         gameCanvasRef.current.appendChild(app.view)
-        createMap(onClick, app, map, turn, player)
+        createMap(onClick, app, map, turn, player, onClick2)
 
         return () => {
             // gameCanvasRef.current.removeChild(app.view)
@@ -78,7 +83,7 @@ function GameRoom() {
         }
     }, [map])
     return (
-        <div ref={gameCanvasRef} section="main">
+        <div section="main">
             {!error && <div ref={gameCanvasRef} id="game-canvas"></div>}
             {error && <h1>666 Server Not Responding</h1>}
         </div>
