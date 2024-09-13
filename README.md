@@ -24,7 +24,7 @@ npm install
 npm start
 ```
 
-# Screenshots
+## Screenshots
 
 ![image](https://github.com/user-attachments/assets/731f349a-20e3-4237-b82f-c655234e7613)
 
