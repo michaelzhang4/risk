@@ -3,15 +3,15 @@ import * as PIXI from 'pixi.js'
 import createNode from './CreateNode'
 
 let positions = [
-    { x: 100, y: 200 },
-    { x: 300, y: 200 },
-    { x: 500, y: 200 },
-    { x: 100, y: 400 },
-    { x: 300, y: 400 },
-    { x: 500, y: 400 },
-    { x: 100, y: 600 },
-    { x: 300, y: 600 },
-    { x: 500, y: 600 },
+    { x: 100, y: 300 },
+    { x: 300, y: 300 },
+    { x: 500, y: 300 },
+    { x: 100, y: 500 },
+    { x: 300, y: 500 },
+    { x: 500, y: 500 },
+    { x: 100, y: 700 },
+    { x: 300, y: 700 },
+    { x: 500, y: 700 },
 ]
 
 function returnColour(color) {
@@ -26,47 +26,147 @@ function returnColour(color) {
     return null
 }
 
-function createMap(onClick, app, map, turn, player_id, onClick2) {
+function createMap(onClick, app, map, turn, player_id, onClick2, state) {
 
-    const container = new PIXI.Container(); // Create only if it doesn't exist
+    const container = new PIXI.Container();
 
     app.stage.addChild(container)
 
     container.removeChildren()
 
-    const text = new PIXI.Text(turn + ' players turn', {
-        fontFamily: 'Arial',
-        fontSize: 72,
-        fill: 0xffffff, // White color, you can change as needed
-        align: 'center',
-    })
+    if (turn === player_id) {
+        const text = new PIXI.Text('Your turn', {
+            fontFamily: 'Arial',
+            fontSize: 72,
+            fill: 0xffffff,
+            align: 'center',
+        })
+        
+        text.x = 230
+        text.y = 20
+        container.addChild(text)
+    } else {
+        const text = new PIXI.Text('Enemy turn', {
+            fontFamily: 'Arial',
+            fontSize: 72,
+            fill: 0xffffff,
+            align: 'center',
+        })
+        
+        text.x = 200
+        text.y = 20
+        container.addChild(text)
+    }
 
-    text.x = 100
-    text.y = 100
-    container.addChild(text)
+    if(player_id === 'blue') {
+        let connection = new PIXI.Graphics()
+    
+        connection.lineStyle(6, '#0096FF', 1);
+        
+        connection.moveTo(20, 20)
+        
+        connection.lineTo(800, 20)
+        
+        container.addChild(connection)
+    
+        connection.lineStyle(6, '#0096FF', 1);
+        
+        connection.moveTo(20, 200)
+        
+        connection.lineTo(800, 200)
+        
+        container.addChild(connection)
 
-    const text1 = new PIXI.Text('You are ' + player_id, {
-        fontFamily: 'Arial',
-        fontSize: 72,
-        fill: 0xffffff, // White color, you can change as needed
-        align: 'center',
-    })
+        connection.lineStyle(6, '#0096FF', 1);
+        
+        connection.moveTo(600, 400)
+        
+        connection.lineTo(800, 400)
+        
+        container.addChild(connection)
+    
+        connection.lineStyle(6, '#0096FF', 1);
+        
+        connection.moveTo(600, 600)
+        
+        connection.lineTo(800, 600)
+        
+        container.addChild(connection)
 
-    text1.x = 170
-    text1.y = 20
-    container.addChild(text1)
-    const endTurn = PIXI.Sprite.from('/images/endTurn.png')
+    } else if(player_id === 'red') {
+        let connection = new PIXI.Graphics()
+    
+        connection.lineStyle(6, '#FF5733', 1);
+        
+        connection.moveTo(20, 20)
+        
+        connection.lineTo(800, 20)
+        
+        container.addChild(connection)
+    
+        connection.lineStyle(6, '#FF5733', 1);
+        
+        connection.moveTo(20, 200)
+        
+        connection.lineTo(800, 200)
+        
+        container.addChild(connection)
+
+        connection.lineStyle(6, '#FF5733', 1);
+        
+        connection.moveTo(600, 400)
+        
+        connection.lineTo(800, 400)
+        
+        container.addChild(connection)
+    
+        connection.lineStyle(6, '#FF5733', 1);
+        
+        connection.moveTo(600, 600)
+        
+        connection.lineTo(800, 600)
+        
+        container.addChild(connection)
+    }
+
+    if(state==='attack') {
+        const text1 = new PIXI.Text('Attack', {
+            fontFamily: 'Arial',
+            fontSize: 72,
+            fill: 0xffffff, // White color, you can change as needed
+            align: 'center',
+        })
+    
+        text1.x = 300
+        text1.y = 100
+        container.addChild(text1)
+    } else {
+        const text1 = new PIXI.Text('Rally', {
+            fontFamily: 'Arial',
+            fontSize: 72,
+            fill: 0xffffff, // White color, you can change as needed
+            align: 'center',
+        })
+    
+        text1.x = 300
+        text1.y = 100
+        container.addChild(text1)
+    }
+    
+    
+    const endTurn = PIXI.Sprite.from('/images/end_turn.png')
     endTurn.anchor.set(0.5)
     endTurn.x = 700
-    endTurn.y = 600
+    endTurn.y = 500
     endTurn.eventMode = 'dynamic' // Enable interaction
     endTurn.buttonMode = true // Show the pointer cursor
-    endTurn.width = 200
-    endTurn.height = 200
+    endTurn.width = 300
+    endTurn.height = 300
     endTurn.eventMode = 'static'
     endTurn.cursor = 'pointer'
     endTurn.on('pointerdown', () => onClick2())
     container.addChild(endTurn)
+
 
     let nodes = map[0]
     for (let i=0; i < nodes.length; i++) {

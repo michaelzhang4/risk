@@ -14,6 +14,7 @@ function GameRoom() {
     const [error, setError] = useState(true)
     const [player, setPlayer] = useState('')
     const [turn, setTurn] = useState('')
+    const [state, setState] = useState('')
     const [roomName, setRoomName] = useState(room.substring(5, room.length))
     const socketRef = useRef(null)
     const appRef = useRef(null)
@@ -36,6 +37,10 @@ function GameRoom() {
 
         socket.on('turn', (data) => {
             setTurn(data)
+        })
+
+        socket.on('state', (data) => {
+            setState(data)
         })
 
         socket.on('connect_error', (err) => {
@@ -87,11 +92,11 @@ function GameRoom() {
 
         app.renderer.render(app.stage) 
 
-        createMap(onClick, app, map, turn, player, onClick2)
+        createMap(onClick, app, map, turn, player, onClick2, state)
 
         return () => {
         }
-    }, [map])
+    }, [map,turn,state])
 
 
     useEffect(() => {

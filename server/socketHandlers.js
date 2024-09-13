@@ -47,6 +47,9 @@ function setupSocketHandlers(io) {
                 socket.emit('map', [roomMaps[room], roomSize[room]])
                 io.to(room).emit('turn', roomTurns[room])
                 socket.emit('turn', roomTurns[room])
+                io.to(room).emit('state', roomPhase[room])
+                socket.emit('state', roomPhase[room])
+                
             } else {
                 socket.emit('full')
             }
@@ -95,6 +98,8 @@ function setupSocketHandlers(io) {
             socket.emit('map', [roomMaps[room], roomSize[room]])
             io.to(room).emit('turn', roomTurns[room])
             socket.emit('turn', roomTurns[room])
+            io.to(room).emit('state', roomPhase[room])
+            socket.emit('state', roomPhase[room])
         }
     })
 }
@@ -104,6 +109,8 @@ function sendPlayerInfo(socket, room, playerColor) {
     io.to(room).emit('map', [roomMaps[room], roomSize[room]]);
     socket.emit('map', [roomMaps[room], roomSize[room]]);
     socket.emit('turn', roomTurns[room]);
+    io.to(room).emit('state', roomPhase[room])
+    socket.emit('state', roomPhase[room])
 }
 
 function emitAllData(io, room, roomMaps, roomTurns, roomSize) {
@@ -111,6 +118,8 @@ function emitAllData(io, room, roomMaps, roomTurns, roomSize) {
     socket.emit('map', [roomMaps[room], roomSize[room]])
     io.to(room).emit('turn', roomTurns[room])
     socket.emit('turn', roomTurns[room])
+    io.to(room).emit('state', roomPhase[room])
+    socket.emit('state', roomPhase[room])
 }
 
 module.exports = {
