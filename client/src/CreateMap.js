@@ -3,31 +3,32 @@ import * as PIXI from 'pixi.js'
 import createNode from './CreateNode'
 
 let positions = [
-    { x: 100, y: 300 },
-    { x: 400, y: 300 },
-    { x: 700, y: 300 },
+    { x: 100, y: 200 },
+    { x: 300, y: 200 },
+    { x: 500, y: 200 },
+    { x: 100, y: 400 },
+    { x: 300, y: 400 },
+    { x: 500, y: 400 },
     { x: 100, y: 600 },
-    { x: 400, y: 600 },
-    { x: 700, y: 600 },
-    { x: 100, y: 900 },
-    { x: 400, y: 900 },
-    { x: 700, y: 900 },
+    { x: 300, y: 600 },
+    { x: 500, y: 600 },
 ]
 
 function returnColour(color) {
     if (color === 'blue') {
-        return '/images/blueNode.png'
+        return '/images/blue_node.png'
     } else if (color === 'red') {
-        return '/images/redNode.png'
+        return '/images/red_node.png'
     } else if (color === 'neutral') {
-        return '/images/greyNode.png'
+        return '/images/gray_node.png'
     }
 
     return null
 }
 
 function createMap(onClick, app, map, turn, player_id, onClick2) {
-    const container = new PIXI.Container()
+
+    const container = new PIXI.Container(); // Create only if it doesn't exist
 
     app.stage.addChild(container)
 
@@ -56,7 +57,7 @@ function createMap(onClick, app, map, turn, player_id, onClick2) {
     container.addChild(text1)
     const endTurn = PIXI.Sprite.from('/images/endTurn.png')
     endTurn.anchor.set(0.5)
-    endTurn.x = 1000
+    endTurn.x = 700
     endTurn.y = 600
     endTurn.eventMode = 'dynamic' // Enable interaction
     endTurn.buttonMode = true // Show the pointer cursor
@@ -80,8 +81,8 @@ function createMap(onClick, app, map, turn, player_id, onClick2) {
             let endy = positions[connections[j] - 1].y
             
             let connection = new PIXI.Graphics()
-            
-            connection.lineStyle(6, '#000000', 1)
+
+            connection.lineStyle(6, '#899499', 1);
             
             connection.moveTo(startx, starty)
             
@@ -90,6 +91,57 @@ function createMap(onClick, app, map, turn, player_id, onClick2) {
             container.addChild(connection)
         }
     }
+
+    for (let i=0; i < nodes.length; i++) {
+        let connections = nodes[i].connections 
+        for (let j = 0; j < connections.length; j++) {
+            if(nodes[i].color === 'blue' && nodes[i].color === 'red') {
+                let startx = positions[i].x
+            
+                let starty = positions[i].y
+                
+                let endx = positions[connections[j] - 1].x
+                
+                let endy = positions[connections[j] - 1].y
+                
+                let connection = new PIXI.Graphics()
+                
+                connection.lineStyle(6, '#5D3FD3', 1)
+                
+                connection.moveTo(startx, starty)
+                
+                connection.lineTo(endx, endy)
+                
+                container.addChild(connection)
+            }
+            else if(nodes[i].color === 'blue' || nodes[i].color === 'red') {
+                
+                let startx = positions[i].x
+            
+                let starty = positions[i].y
+                
+                let endx = positions[connections[j] - 1].x
+                
+                let endy = positions[connections[j] - 1].y
+                
+                let connection = new PIXI.Graphics()
+                
+                if(nodes[i].color==='blue') {
+                    connection.lineStyle(6, '#0096FF', 1)
+                } else if(nodes[i].color==='red') {
+                    connection.lineStyle(6, '#FF5733', 1)
+                }
+                
+                connection.moveTo(startx, starty)
+                
+                connection.lineTo(endx, endy)
+                
+                container.addChild(connection)
+            }
+        }
+    }
+
+    
     
     for (let i = 0; i < positions.length; i++) { 
         createNode(

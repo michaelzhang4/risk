@@ -16,6 +16,7 @@ function GameRoom() {
     const [turn, setTurn] = useState('')
     const [roomName, setRoomName] = useState(room.substring(5, room.length))
     const socketRef = useRef(null)
+    const appRef = useRef(null)
 
     useEffect(() => {
         socketRef.current = io('http://localhost:3001')
@@ -68,20 +69,40 @@ function GameRoom() {
             socketRef.current.emit('selected', [sprite.id, roomName])
         }
 
-        const app = new PIXI.Application({
-            background: '#1099bb',
-            resizeTo: window,
-        })
-        gameCanvasRef.current.appendChild(app.view)
+         if (!appRef.current) {
+            appRef.current = new PIXI.Application({
+                background: '#030350',
+                resizeTo: window,
+                clearBeforeRender: true
+            })
+
+            if (gameCanvasRef.current) {
+                gameCanvasRef.current.appendChild(appRef.current.view)
+            }
+        }
+
+        const app = appRef.current
+
+        app.stage.removeChildren()
+
+        app.renderer.render(app.stage) 
+
         createMap(onClick, app, map, turn, player, onClick2)
 
         return () => {
-            // gameCanvasRef.current.removeChild(app.view)
-            if (app && app.destroy) {
-                app.destroy(true, true)
-            }
         }
     }, [map])
+
+
+    useEffect(() => {
+        return () => {
+            if (appRef.current) {
+                appRef.current.destroy(true, true)
+                appRef.current = null
+            }
+        }
+    }, [])
+
     return (
         <div section="main">
             {!error && <div ref={gameCanvasRef} id="game-canvas"></div>}
