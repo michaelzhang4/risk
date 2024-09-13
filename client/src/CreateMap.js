@@ -95,48 +95,87 @@ function createMap(onClick, app, map, turn, player_id, onClick2) {
     for (let i=0; i < nodes.length; i++) {
         let connections = nodes[i].connections 
         for (let j = 0; j < connections.length; j++) {
-            if(nodes[i].color === 'blue' && nodes[i].color === 'red') {
-                let startx = positions[i].x
-            
-                let starty = positions[i].y
-                
-                let endx = positions[connections[j] - 1].x
-                
-                let endy = positions[connections[j] - 1].y
-                
-                let connection = new PIXI.Graphics()
-                
-                connection.lineStyle(6, '#5D3FD3', 1)
-                
-                connection.moveTo(startx, starty)
-                
-                connection.lineTo(endx, endy)
-                
-                container.addChild(connection)
+            if(nodes[i].color === 'grey') {
+
             }
-            else if(nodes[i].color === 'blue' || nodes[i].color === 'red') {
+            else if (nodes[i].color === 'blue') {
+                if (nodes[connections[j] - 1].color === 'red') {
+
+                    let startx = positions[i].x
+                    
+                    let starty = positions[i].y
                 
-                let startx = positions[i].x
+                    let endx = positions[connections[j] - 1].x
+                    
+                    let endy = positions[connections[j] - 1].y
+                    
+                    let connection = new PIXI.Graphics()
+                    
+                    connection.lineStyle(6, '#5D3FD3', 1)
+                    
+                    connection.moveTo(startx, starty)
+                    
+                    connection.lineTo(endx, endy)
+                    
+                    container.addChild(connection)
+                } else {
+                    let startx = positions[i].x
             
-                let starty = positions[i].y
-                
-                let endx = positions[connections[j] - 1].x
-                
-                let endy = positions[connections[j] - 1].y
-                
-                let connection = new PIXI.Graphics()
-                
-                if(nodes[i].color==='blue') {
+                    let starty = positions[i].y
+                    
+                    let endx = positions[connections[j] - 1].x
+                    
+                    let endy = positions[connections[j] - 1].y
+                    
+                    let connection = new PIXI.Graphics()
+                    
                     connection.lineStyle(6, '#0096FF', 1)
-                } else if(nodes[i].color==='red') {
-                    connection.lineStyle(6, '#FF5733', 1)
+                    
+                    connection.moveTo(startx, starty)
+                    
+                    connection.lineTo(endx, endy)
+                    
+                    container.addChild(connection)
                 }
+            }
+            else if(nodes[i].color === 'red') {
+                if (nodes[connections[j] - 1].color === 'blue') {
+                    let startx = positions[i].x
+                    
+                    let starty = positions[i].y
                 
-                connection.moveTo(startx, starty)
+                    let endx = positions[connections[j] - 1].x
+                    
+                    let endy = positions[connections[j] - 1].y
+                    
+                    let connection = new PIXI.Graphics()
+                    
+                    connection.lineStyle(6, '#5D3FD3', 1)
+                    
+                    connection.moveTo(startx, starty)
+                    
+                    connection.lineTo(endx, endy)
+                    
+                    container.addChild(connection)
+                } else {
+                    let startx = positions[i].x
                 
-                connection.lineTo(endx, endy)
-                
-                container.addChild(connection)
+                    let starty = positions[i].y
+                    
+                    let endx = positions[connections[j] - 1].x
+                    
+                    let endy = positions[connections[j] - 1].y
+                    
+                    let connection = new PIXI.Graphics()
+                    
+                        connection.lineStyle(6, '#FF5733', 1)
+                    
+                    connection.moveTo(startx, starty)
+                    
+                    connection.lineTo(endx, endy)
+                    
+                    container.addChild(connection)
+                }
             }
         }
     }
