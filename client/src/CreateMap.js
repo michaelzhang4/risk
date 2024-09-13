@@ -16,11 +16,11 @@ let positions = [
 
 function returnColour(color) {
     if (color === 'blue') {
-        return '../images/blueNode.png'
+        return '/images/blueNode.png'
     } else if (color === 'red') {
-        return '../images/redNode.png'
+        return '/images/redNode.png'
     } else if (color === 'neutral') {
-        return '../images/greyNode.png'
+        return '/images/greyNode.png'
     }
 
     return null
@@ -54,7 +54,7 @@ function createMap(onClick, app, map, turn, player_id, onClick2) {
     text1.x = 170
     text1.y = 20
     container.addChild(text1)
-    const endTurn = PIXI.Sprite.from('../images/endTurn.png')
+    const endTurn = PIXI.Sprite.from('/images/endTurn.png')
     endTurn.anchor.set(0.5)
     endTurn.x = 1000
     endTurn.y = 600
@@ -67,44 +67,45 @@ function createMap(onClick, app, map, turn, player_id, onClick2) {
     endTurn.on('pointerdown', () => onClick2())
     container.addChild(endTurn)
 
-    for (let i = 0; i < map.length; i++) {
-        let connections = map[i].connections
-
+    let nodes = map[0]
+    for (let i=0; i < nodes.length; i++) {
+        let connections = nodes[i].connections 
         for (let j = 0; j < connections.length; j++) {
             let startx = positions[i].x
-
+            
             let starty = positions[i].y
-
+            
             let endx = positions[connections[j] - 1].x
-
+            
             let endy = positions[connections[j] - 1].y
-
+            
             let connection = new PIXI.Graphics()
-
+            
             connection.lineStyle(6, '#000000', 1)
-
+            
             connection.moveTo(startx, starty)
-
+            
             connection.lineTo(endx, endy)
-
+            
             container.addChild(connection)
         }
     }
-    for (let i = 0; i < positions.length; i++) {
+    
+    for (let i = 0; i < positions.length; i++) { 
         createNode(
             positions[i].x,
 
             positions[i].y,
 
-            returnColour(map[i].color),
+            returnColour(nodes[i].color),
 
             onClick,
 
             container,
 
-            map[i].units,
+            nodes[i].units,
 
-            map[i].id
+            nodes[i].id
         )
     }
 }

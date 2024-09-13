@@ -6,7 +6,7 @@ function createNode(x, y, imagePath, onClick, app, units,id) {
     node.anchor.set(0.5)
     node.x = x
     node.y = y
-    node.eventMode = 'dynamic' // Enable interaction
+    node.eventMode = 'dynamic' // Enable interaction 
     node.buttonMode = true // Show the pointer cursor
     node.width = 200
     node.height = 200
