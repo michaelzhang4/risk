@@ -24,5 +24,6 @@ npm install
 npm start
 ```
 ## Screenshots
-<img width="607" alt="chrome_uvjF7KSOgF" src="https://github.com/user-attachments/assets/271434cb-b308-4629-ad9c-396c50e28cb1">
-<img width="614" alt="chrome_cQnn4Xtkhr" src="https://github.com/user-attachments/assets/3cc810dc-f797-426c-a98c-49f3337e6519">
+
+<img width="607" alt="chrome_uvjF7KSOgF" src="https://github.com/user-attachments/assets/16437508-354d-48f9-9fee-5533d14c24ce">
+![chrome_cQnn4Xtkhr](https://github.com/user-attachments/assets/3f21dbb1-5792-4817-ac7d-db41b52b3b54)
