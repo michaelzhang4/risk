@@ -26,4 +26,4 @@ npm start
 ## Screenshots
 
 <img width="607" alt="chrome_uvjF7KSOgF" src="https://github.com/user-attachments/assets/f5b109cf-5104-4ace-87cf-01c1201b59d4">
-![chrome_cQnn4Xtkhr](https://github.com/user-attachments/assets/2510add7-d2a8-46d3-8ea5-977881c3fe8a)
+<img width="607" alt="chrome_cQnn4Xtkhr" src="https://github.com/user-attachments/assets/2510add7-d2a8-46d3-8ea5-977881c3fe8a">
