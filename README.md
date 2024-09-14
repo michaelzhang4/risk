@@ -25,5 +25,5 @@ npm start
 ```
 ## Screenshots
 
-<img width="607" alt="chrome_uvjF7KSOgF" src="https://github.com/user-attachments/assets/16437508-354d-48f9-9fee-5533d14c24ce">
-![chrome_cQnn4Xtkhr](https://github.com/user-attachments/assets/3f21dbb1-5792-4817-ac7d-db41b52b3b54)
+<img width="607" alt="chrome_uvjF7KSOgF" src="https://github.com/user-attachments/assets/f5b109cf-5104-4ace-87cf-01c1201b59d4">
+![chrome_cQnn4Xtkhr](https://github.com/user-attachments/assets/2510add7-d2a8-46d3-8ea5-977881c3fe8a)
