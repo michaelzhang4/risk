@@ -34,6 +34,17 @@ function createMap(onClick, app, map, turn, player_id, onClick2, state) {
 
     container.removeChildren()
 
+    const text = new PIXI.Text('End\nTurn', {
+        fontFamily: 'Arial',
+        fontSize: 72,
+        fill: 0xffffff,
+        align: 'center',
+    })
+    
+    text.x = 620
+    text.y = 420
+    container.addChild(text)
+
     if (turn === player_id) {
         const text = new PIXI.Text('Your turn', {
             fontFamily: 'Arial',
