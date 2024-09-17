@@ -1,10 +1,11 @@
-import './App.css';
 import GameRoom from './components/GameRoom';
 import HomePage from './components/HomePage';
-import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
+    // Homepage and game rooms
+    // :room captures any value after game/ as a parameter
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage/>} />
